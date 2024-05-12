@@ -27,6 +27,8 @@ async function run() {
     const servicesCollection = db.collection("services");
     const projectCollection = db.collection("projects");
     const educationCollection = db.collection("educations");
+    const skillsCollection = db.collection("skills");
+    const blogCollection = db.collection("blogs");
 
     // services
     app.get("/api/v1/services", async (req, res) => {
@@ -34,13 +36,31 @@ async function run() {
       res.send(result);
     });
 
-    // projects
+    // get all projects
     app.get("/api/v1/projects", async (req, res) => {
       const result = await projectCollection.find().toArray();
       res.send(result);
     });
 
-    // Add a new project
+    // get a single projects by its ID
+    app.get("/api/v1/projects/:id", async (req, res) => {
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await projectCollection.findOne(query);
+        if (result) {
+          console.log(result);
+          res.send(result);
+        } else {
+          res.status(404).send({ error: "Project not found" });
+        }
+      } catch (error) {
+        console.error("Error fetching project:", error);
+        res.status(500).send({ error: "Internal server error" });
+      }
+    });
+
+    // add a new project
     app.post("/api/v1/projects", async (req, res) => {
       try {
         const {
@@ -101,22 +121,53 @@ async function run() {
       }
     });
 
-    // Route to get a single product by its ID
-    app.get("/api/v1/projects/:id", async (req, res) => {
-      try {
-        const id = req.params.id;
-        const query = { _id: new ObjectId(id) };
-        const result = await projectCollection.findOne(query);
-        if (result) {
-          console.log(result);
-          res.send(result);
-        } else {
-          res.status(404).send({ error: "Project not found" });
-        }
-      } catch (error) {
-        console.error("Error fetching project:", error);
-        res.status(500).send({ error: "Internal server error" });
-      }
+    // update projects
+    app.put("/api/v1/projects/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedProject = req.body;
+
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const project = {
+        $set: {
+          name: updatedProject.name,
+          image: updatedProject.image,
+          live_link: updatedProject.live_link,
+          rating: updatedProject.rating,
+          review: updatedProject.review,
+          category: updatedProject.category,
+          gitHub_link: updatedProject.gitHub_link,
+          video_showcasing: updatedProject.video_showcasing,
+          gitHub_link_server: updatedProject.gitHub_link_server,
+          tec1: updatedProject.tec1,
+          tec2: updatedProject.tec2,
+          tec3: updatedProject.tec3,
+          tec4: updatedProject.tec4,
+          tec5: updatedProject.tec5,
+          tec6: updatedProject.tec6,
+          tec7: updatedProject.tec7,
+          tec8: updatedProject.tec8,
+          Des1: updatedProject.Des1,
+          Des2: updatedProject.Des2,
+          Des3: updatedProject.Des3,
+          Des4: updatedProject.Des4,
+        },
+      };
+      const result = await projectCollection.updateOne(
+        filter,
+        project,
+        options
+      );
+
+      res.send(result);
+    });
+
+    //delete projects
+    app.delete("/api/v1/projects/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await projectCollection.deleteOne(query);
+      res.send(result);
     });
 
     // educations
