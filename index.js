@@ -176,6 +176,27 @@ async function run() {
       res.send(result);
     });
 
+    // Add skills
+    app.post("/api/v1/skills", async (req, res) => {
+      const addSkills = req.body;
+      const result = await skillsCollection.insertOne(addSkills);
+      res.send(result);
+    });
+
+    // get all skills
+    app.get("/api/v1/skills", async (req, res) => {
+      const result = await skillsCollection.find().toArray();
+      res.send(result);
+    });
+
+    //delete skills
+    app.delete("/api/v1/skills/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await skillsCollection.deleteOne(query);
+      res.send(result);
+    });
+
     // route
     app.get("/", (req, res) => {
       const serverStatus = {
