@@ -131,26 +131,13 @@ async function run() {
       const project = {
         $set: {
           name: updatedProject.name,
-          image: updatedProject.image,
-          live_link: updatedProject.live_link,
-          rating: updatedProject.rating,
-          review: updatedProject.review,
           category: updatedProject.category,
-          gitHub_link: updatedProject.gitHub_link,
-          video_showcasing: updatedProject.video_showcasing,
-          gitHub_link_server: updatedProject.gitHub_link_server,
           tec1: updatedProject.tec1,
           tec2: updatedProject.tec2,
           tec3: updatedProject.tec3,
           tec4: updatedProject.tec4,
           tec5: updatedProject.tec5,
           tec6: updatedProject.tec6,
-          tec7: updatedProject.tec7,
-          tec8: updatedProject.tec8,
-          Des1: updatedProject.Des1,
-          Des2: updatedProject.Des2,
-          Des3: updatedProject.Des3,
-          Des4: updatedProject.Des4,
         },
       };
       const result = await projectCollection.updateOne(
@@ -206,8 +193,8 @@ async function run() {
       const options = { upsert: true };
       const skill = {
         $set: {
-          title: updatedSkill.title,
-          icon: updatedSkill.icon,
+          name: updatedSkill.name,
+          image: updatedSkill.image,
         },
       };
       const result = await skillsCollection.updateOne(filter, skill, options);
