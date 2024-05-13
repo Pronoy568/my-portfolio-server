@@ -7,7 +7,12 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // MongoDB Connection URL
@@ -165,9 +170,14 @@ async function run() {
 
     // Add skills
     app.post("/api/v1/skills", async (req, res) => {
-      const addSkills = req.body;
-      const result = await skillsCollection.insertOne(addSkills);
-      res.send(result);
+      try {
+        const addSkills = req.body;
+        const result = await skillsCollection.insertOne(addSkills);
+        res.send(result);
+      } catch (error) {
+        console.error("Error adding skills:", error);
+        res.status(500).send({ error: "Internal server error" });
+      }
     });
 
     // get all skills
@@ -178,10 +188,15 @@ async function run() {
 
     //delete skills
     app.delete("/api/v1/skills/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await skillsCollection.deleteOne(query);
-      res.send(result);
+      try {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await skillsCollection.deleteOne(query);
+        res.send(result);
+      } catch (error) {
+        console.error("Error deleting skill:", error);
+        res.status(500).send({ error: "Internal server error" });
+      }
     });
 
     // update skills
