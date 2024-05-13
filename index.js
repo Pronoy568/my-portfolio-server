@@ -197,6 +197,73 @@ async function run() {
       res.send(result);
     });
 
+    // update skills
+    app.put("/api/v1/skills/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedSkill = req.body;
+
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const skill = {
+        $set: {
+          title: updatedSkill.title,
+          icon: updatedSkill.icon,
+        },
+      };
+      const result = await skillsCollection.updateOne(filter, skill, options);
+
+      res.send(result);
+    });
+
+    // Add blogs
+    app.post("/api/v1/blogs", async (req, res) => {
+      const addBlogs = req.body;
+      const result = await blogCollection.insertOne(addBlogs);
+      res.send(result);
+    });
+
+    // get all blogs
+    app.get("/api/v1/blogs", async (req, res) => {
+      const result = await blogCollection.find().toArray();
+      res.send(result);
+    });
+
+    // Route to get a single blogs by its ID
+    app.get("/api/v1/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await blogCollection.findOne(query);
+      res.send(result);
+    });
+
+    //delete blogs
+    app.delete("/api/v1/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await blogCollection.deleteOne(query);
+      res.send(result);
+    });
+
+    // update blogs
+    app.put("/api/v1/blogs/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedBlog = req.body;
+
+      const filter = { _id: new ObjectId(id) };
+      const options = { upsert: true };
+      const blog = {
+        $set: {
+          image: updatedBlog.image,
+          title: updatedBlog.title,
+          description: updatedBlog.description,
+          link: updatedBlog.link,
+        },
+      };
+      const result = await blogCollection.updateOne(filter, blog, options);
+
+      res.send(result);
+    });
+
     // route
     app.get("/", (req, res) => {
       const serverStatus = {
